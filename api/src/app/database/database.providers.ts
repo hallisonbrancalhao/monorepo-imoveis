@@ -1,5 +1,6 @@
 import { DataSource } from 'typeorm';
 
+console.log('Entity path: ', __dirname + '/../**/*.entity{.ts,.js}');
 export const databaseProviders = [
   {
     provide: 'DATABASE_CONNECTION',
@@ -7,7 +8,7 @@ export const databaseProviders = [
       const dataSource = new DataSource({
         type: 'mysql',
         host: 'localhost',
-        port: 3306,
+        port: 3307,
         username: process.env.MYSQL_USER,
         password: process.env.MYSQL_PASSWORD,
         database: process.env.MYSQL_DATABASE,

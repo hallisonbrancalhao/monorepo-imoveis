@@ -8,6 +8,5 @@ import { imovelProvidrs } from './imovel.providers';
   imports: [DatabaseModule],
   controllers: [ImovelController],
   providers: [...imovelProvidrs, ImovelService],
-  exports: [...imovelProvidrs, ImovelService],
 })
 export class ImovelModule {}
