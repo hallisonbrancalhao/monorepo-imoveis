@@ -1,14 +1,23 @@
-import { Entity, PrimaryGeneratedColumn, Column, ManyToOne } from 'typeorm';
-import { Imovel } from './imovel.entity'; // importe o seu arquivo de entidade de Imovel
+import {
+  Entity,
+  PrimaryGeneratedColumn,
+  Column,
+  ManyToOne,
+  JoinColumn,
+} from 'typeorm';
+import { Imovel } from './imovel.entity';
 
-@Entity('comodo')
+@Entity()
 export class Comodo {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @Column({ length: 255 })
+  @Column()
   nome: string;
 
-  @ManyToOne(() => Imovel, (imovel) => imovel.comodos)
+  @ManyToOne(() => Imovel, (imovel) => imovel.comodos, {
+    onDelete: 'CASCADE',
+  })
+  @JoinColumn({ name: 'imovel_id' })
   imovel: Imovel;
 }

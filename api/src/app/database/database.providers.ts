@@ -1,4 +1,6 @@
 import { DataSource } from 'typeorm';
+import { Imovel } from '../imovel/entities/imovel.entity';
+import { Comodo } from '../imovel/entities/comodo.entity';
 
 export const databaseProviders = [
   {
@@ -7,11 +9,11 @@ export const databaseProviders = [
       const dataSource = new DataSource({
         type: 'mysql',
         host: 'localhost',
-        port: 3306,
+        port: 3307,
         username: process.env.MYSQL_USER,
         password: process.env.MYSQL_PASSWORD,
         database: process.env.MYSQL_DATABASE,
-        entities: [__dirname + '/../**/*.entity{.ts,.js}'],
+        entities: [Imovel, Comodo],
         synchronize: true,
       });
 
