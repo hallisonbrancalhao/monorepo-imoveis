@@ -1,12 +1,72 @@
 'use client';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import './page.scss';
+import axios from 'axios';
 
+interface IImovel {
+  id: number;
+  descricao: string;
+  endereco: string;
+  dataCompra: Date;
+  comodos: IComodo[];
+}
 interface IComodo {
   nome: string;
 }
 
-export default function Index() {
+export default function RootPage() {
+  const [imoveis, setImoveis] = useState<IImovel[]>([]);
+
+  const getImoveis = async () => {
+    const response = await axios.get('http://localhost:3000/api/imovel');
+    setImoveis(response.data);
+  };
+
+  useEffect(() => {
+    getImoveis();
+  }, []);
+
+  const [formData, setFormData] = useState({
+    descricao: '',
+    dataCompra: '',
+    endereco: '',
+    comodos: [],
+  });
+
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+
+    try {
+      const response = await axios.post(
+        'http://localhost:3000/api/imovel',
+        FormData,
+        {
+          headers: {
+            'Content-Type': 'application/json',
+          },
+        }
+      );
+      if (response.status === 200) {
+        console.log('Cadastro realizado com sucesso!', response.data);
+
+        setFormData({
+          descricao: '',
+          dataCompra: '',
+          endereco: '',
+          comodos: [],
+        });
+      }
+    } catch (error) {
+      console.error('Erro ao realizar cadastro:', error);
+    }
+  };
+
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setFormData({
+      ...formData,
+      [e.target.name]: e.target.value,
+    });
+  };
   const [comodos, setComodos] = useState<IComodo[]>([{ nome: '' }]);
 
   const addComodo = (): void => {
@@ -35,7 +95,7 @@ export default function Index() {
       </div>
 
       <div className="form-container">
-        <form className="form-space">
+        <form className="form-space" onSubmit={handleSubmit}>
           <div className="input-section">
             <label htmlFor="descricao" className="form-label">
               Descrição
@@ -47,6 +107,7 @@ export default function Index() {
                 name="descricao"
                 className="form-input"
                 required
+                onChange={handleChange}
               />
             </div>
           </div>
@@ -61,6 +122,7 @@ export default function Index() {
                 name="dataCompra"
                 className="form-input"
                 required
+                onChange={handleChange}
               />
             </div>
           </div>
@@ -75,6 +137,7 @@ export default function Index() {
                 name="endereco"
                 className="form-input"
                 required
+                onChange={handleChange}
               />
             </div>
           </div>
@@ -112,6 +175,15 @@ export default function Index() {
             </button>
           </div>
         </form>
+
+        <ul>
+          {imoveis.length &&
+            imoveis.map((imovel: IImovel) => (
+              <li key={imovel.id}>
+                {imovel.descricao} - {imovel.endereco}
+              </li>
+            ))}
+        </ul>
       </div>
     </main>
   );
