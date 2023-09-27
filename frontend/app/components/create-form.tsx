@@ -4,6 +4,7 @@ import { useForm } from 'react-hook-form';
 import * as z from 'zod';
 import { imovelSchema } from '../zod-schema/cadastro-imovel';
 import { useState } from 'react';
+import { api } from '../../core/api/axios';
 
 type FormData = z.infer<typeof imovelSchema>;
 
@@ -26,12 +27,17 @@ export default function CadastroForm() {
   const [numComodos, setNumComodos] = useState(0);
 
   async function onSubmit(data: FormData) {
-    console.log('data', data);
+    try {
+      await api.post('/imovel', data);
+      alert('Cadastro realizado com sucesso!');
+    } catch (error) {
+      alert('Erro ao cadastrar imóvel!');
+    }
   }
 
   return (
-    <div className="selection:bg-blue-600 selection:text-white">
-      <div className="flex min-h-screen items-center justify-center bg-cyan-100">
+    <div className="border-r- selection:text-white">
+      <div className="flex min-h-screen items-center justify-center bg-slate-100 border-r-slate-300 border">
         <div className="flex-1 p-8">
           <div className="mx-auto w-[42rem] overflow-hidden rounded-3xl bg-white shadow-md">
             <div className="rounded-bl-4xl relative h-44 bg-blue-600">
@@ -48,8 +54,8 @@ export default function CadastroForm() {
               </svg>
             </div>
 
-            <div className="rounded-tr-4xl bg-white px-10 pb-8 pt-4">
-              <h1 className="text-2xl font-semibold text-gray-900">CREFAZ!</h1>
+            <div className="rounded-tr-4xl bg-white px-10 pb-8 pt-4 text-center">
+              <h1 className="font-semibold text-blue-950 text-4xl">CREFAZ!</h1>
               <form className="mt-12" onSubmit={handleSubmit(onSubmit)}>
                 <div className="relative">
                   <input
