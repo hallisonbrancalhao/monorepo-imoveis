@@ -1,6 +1,7 @@
 import { DataSource } from 'typeorm';
+import { Imovel } from '../imovel/entities/imovel.entity';
+import { Comodo } from '../imovel/entities/comodo.entity';
 
-console.log('Entity path: ', __dirname + '/../**/*.entity{.ts,.js}');
 export const databaseProviders = [
   {
     provide: 'DATABASE_CONNECTION',
@@ -12,7 +13,7 @@ export const databaseProviders = [
         username: process.env.MYSQL_USER,
         password: process.env.MYSQL_PASSWORD,
         database: process.env.MYSQL_DATABASE,
-        entities: [__dirname + '/../**/*.entity{.ts,.js}'],
+        entities: [Imovel, Comodo],
         synchronize: true,
       });
 

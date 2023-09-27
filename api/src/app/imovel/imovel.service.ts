@@ -35,10 +35,8 @@ export class ImovelService {
     return savedImovel;
   }
 
-  async findAll() {
-    const allImoveis = await this.imovelRepository.find();
-    console.log(allImoveis);
-    return allImoveis;
+  async findAll(): Promise<Imovel[]> {
+    return await this.imovelRepository.find({ relations: ['comodos'] });
   }
 
   async findOne(id: number): Promise<Imovel> {

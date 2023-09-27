@@ -9,17 +9,14 @@ export class Imovel {
 
   @Column()
   @IsString({ message: 'A descricao deve ser uma string' })
-  @IsNotEmpty()
   descricao: string;
 
   @Column('datetime')
   @IsDate({ message: 'A data da compra deve ser uma data' })
-  @IsNotEmpty()
   dataCompra: Date;
 
   @Column()
   @IsString({ message: 'O endereco deve ser uma string' })
-  @IsNotEmpty()
   endereco: string;
 
   @OneToMany(() => Comodo, (comodo) => comodo.imovel, {

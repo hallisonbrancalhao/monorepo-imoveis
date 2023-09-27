@@ -13,6 +13,7 @@ import { ImovelService } from './imovel.service';
 import { CreateImovelDto } from './dto/create-imovel.dto';
 import { UpdateImovelDto } from './dto/update-imovel.dto';
 import { ApiBody, ApiOperation, ApiParam, ApiResponse } from '@nestjs/swagger';
+import { Imovel } from './entities/imovel.entity';
 
 @Controller('imovel')
 export class ImovelController {
@@ -24,14 +25,25 @@ export class ImovelController {
   @ApiBody({ type: CreateImovelDto, description: 'Dados do imóvel' })
   @Post()
   create(@Body() createImovelDto: CreateImovelDto) {
-    return this.imovelService.create(createImovelDto);
+    try {
+      return this.imovelService.create(createImovelDto);
+    } catch (error) {
+      throw new HttpException(
+        {
+          status: HttpStatus.NOT_IMPLEMENTED,
+          error: 'Não foi possivel criar o imovel.',
+          message: error.message,
+        },
+        HttpStatus.NOT_FOUND
+      );
+    }
   }
 
   @ApiOperation({ summary: 'Lista todos os imóveis' })
   @ApiResponse({ status: 200, description: 'Imóveis listados com sucesso' })
   @ApiResponse({ status: 400, description: 'Dados inválidos' })
   @Get()
-  async findAll() {
+  async findAll(): Promise<Imovel[]> {
     try {
       return await this.imovelService.findAll();
     } catch (error) {
