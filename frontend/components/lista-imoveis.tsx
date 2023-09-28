@@ -1,5 +1,6 @@
 import Link from 'next/link';
-import { api } from '../../core';
+import { api } from '../core/api';
+import { Imovel } from '../core/interface/imovel.interface';
 
 async function getImoveis() {
   try {
@@ -11,24 +12,12 @@ async function getImoveis() {
   }
 }
 
-interface IComodos {
-  nome: string;
-}
-
-export interface IImoveis {
-  id: number;
-  descricao: string;
-  endereco: string;
-  dataCompra: Date;
-  comodos: IComodos[];
-}
-
 export default async function ListaImoveis() {
   async function handleDelete(id: number) {
     api.delete(`/imovel/${id}`);
   }
 
-  const imoveis: IImoveis[] | null = await getImoveis();
+  const imoveis: Imovel[] | null = await getImoveis();
 
   return (
     <section className="w-full p-16 bg-slate-50">

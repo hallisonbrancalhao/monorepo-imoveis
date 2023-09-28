@@ -4,7 +4,8 @@ import { useForm } from 'react-hook-form';
 import * as z from 'zod';
 import { imovelSchema } from '../zod-schema/cadastro-imovel';
 import { useState } from 'react';
-import { api } from '../../core/api/axios';
+import { api } from '../core/api/axios';
+import FormInput from './input/form-input';
 
 type FormData = z.infer<typeof imovelSchema>;
 
@@ -57,74 +58,29 @@ export default function CadastroForm() {
             <div className="rounded-tr-4xl bg-white px-10 pb-8 pt-4 text-center">
               <h1 className="font-semibold text-blue-950 text-4xl">CREFAZ!</h1>
               <form className="mt-12" onSubmit={handleSubmit(onSubmit)}>
-                <div className="relative">
-                  <input
-                    {...register('descricao', { required: true })}
-                    id="descricao"
-                    name="descricao"
-                    type="text"
-                    className="peer h-10 w-full border-b-2 border-gray-300 text-gray-900 placeholder-transparent focus:border-cyan-600 focus:outline-none"
-                    placeholder="john@doe.com"
-                    autoComplete="off"
-                  />
-                  {errors?.descricao && (
-                    <p className="text-red-600 text-sm">
-                      {errors?.descricao?.message}
-                    </p>
-                  )}
-                  <label
-                    htmlFor="descricao"
-                    className="absolute -top-3.5 left-0 text-sm text-gray-600 transition-all peer-placeholder-shown:top-2 peer-placeholder-shown:text-base peer-placeholder-shown:text-gray-400 peer-focus:-top-3.5 peer-focus:text-sm peer-focus:text-gray-600"
-                  >
-                    Descricao
-                  </label>
-                </div>
+                <FormInput
+                  type="text"
+                  placeholder="Descrição"
+                  register={register('descricao', { required: true })}
+                  errors={errors?.descricao}
+                  label="descricao"
+                />
 
-                <div className="relative mt-10">
-                  <input
-                    {...register('endereco', { required: true })}
-                    id="endereco"
-                    type="endereco"
-                    name="endereco"
-                    className="peer h-10 w-full border-b-2 border-gray-300 text-gray-900 placeholder-transparent focus:border-cyan-600 focus:outline-none"
-                    placeholder="Endereço"
-                    autoComplete="off"
-                  />
-                  {errors?.endereco && (
-                    <p className="text-red-600 text-sm">
-                      {errors?.endereco?.message}
-                    </p>
-                  )}
-                  <label
-                    htmlFor="endereco"
-                    className="absolute -top-3.5 left-0 text-sm text-gray-600 transition-all peer-placeholder-shown:top-2 peer-placeholder-shown:text-base peer-placeholder-shown:text-gray-400 peer-focus:-top-3.5 peer-focus:text-sm peer-focus:text-gray-600"
-                  >
-                    Endereço
-                  </label>
-                </div>
+                <FormInput
+                  type="text"
+                  placeholder="Endereço"
+                  register={register('endereco', { required: true })}
+                  errors={errors?.endereco}
+                  label="endereco"
+                />
 
-                <div className="relative mt-10">
-                  <input
-                    {...register('dataCompra', { required: true })}
-                    id="dataCompra"
-                    type="date"
-                    name="dataCompra"
-                    className="peer h-10 w-full border-b-2 border-gray-300 text-gray-900 placeholder-transparent focus:border-cyan-600 focus:outline-none"
-                    placeholder="Data da Compra"
-                    autoComplete="off"
-                  />
-                  {errors?.dataCompra && (
-                    <p className="text-red-600 text-sm">
-                      {errors?.dataCompra?.message}
-                    </p>
-                  )}
-                  <label
-                    htmlFor="dataCompra"
-                    className="absolute -top-3.5 left-0 text-sm text-gray-600 transition-all peer-placeholder-shown:top-2 peer-placeholder-shown:text-base peer-placeholder-shown:text-gray-400 peer-focus:-top-3.5 peer-focus:text-sm peer-focus:text-gray-600"
-                  >
-                    Data da Compra
-                  </label>
-                </div>
+                <FormInput
+                  type="date"
+                  placeholder="Data da Compra"
+                  register={register('dataCompra', { required: true })}
+                  errors={errors?.dataCompra}
+                  label="dataCompra"
+                />
 
                 {[...Array(numComodos)].map((_, idx) => (
                   <div className="relative mt-10 flex gap-2" key={idx}>
