@@ -1,6 +1,6 @@
 import Link from 'next/link';
-import { api } from '../core/api';
-import { Imovel } from '../core/interface/imovel.interface';
+import { api, Imovel } from '../core';
+import { useRouter } from 'next/navigation';
 
 async function getImoveis() {
   try {
@@ -13,8 +13,11 @@ async function getImoveis() {
 }
 
 export default async function ListaImoveis() {
+  const router = useRouter();
+
   async function handleDelete(id: number) {
-    api.delete(`/imovel/${id}`);
+    await api.delete(`/imovel/${id}`);
+    router.refresh();
   }
 
   const imoveis: Imovel[] | null = await getImoveis();
@@ -29,14 +32,14 @@ export default async function ListaImoveis() {
         imoveis.map((imovel) => (
           <div
             key={imovel.id}
-            className="max-w-sm bg-white border border-gray-200 rounded-lg shadow"
+            className="max-w-sm bg-white border border-gray-200 rounded-lg shadow m-6"
           >
             <div className="p-5">
-              <a href="#">
+              <Link href={`/${imovel.id}`}>
                 <h5 className="mb-2 text-2xl font-bold tracking-tight ">
                   {imovel.descricao}
                 </h5>
-              </a>
+              </Link>
               <ul className="list-group list-group-flush bg-slate-100 border-gray-200 p-2">
                 <h6 className="font-semibold">Cômodos:</h6>
                 {imovel.comodos.map((comodo, index) => (

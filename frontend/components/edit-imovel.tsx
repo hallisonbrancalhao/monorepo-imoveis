@@ -1,16 +1,22 @@
 'use client';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { api } from 'frontend/core';
-import { Imovel } from 'frontend/core/interface/imovel.interface';
-import { imovelSchema } from 'frontend/zod-schema/cadastro-imovel';
+import { Imovel, api } from '../core/';
+import { imovelSchema } from '../zod-schema/cadastro-imovel';
 import { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import FormInput from './input/form-input';
 import { z } from 'zod';
+import { useRouter } from 'next/navigation';
+import AlertErro from './alerts/error';
+import AlertSuccess from './alerts/success';
 
 type FormData = z.infer<typeof imovelSchema>;
 
-export default function EditImovel({ data }: { data: Imovel }) {
+export default function EditImovel({ data: params }: { data: Imovel }) {
+  const [alertError, setAlertError] = useState(false);
+  const [alertSuccess, setAlertSuccess] = useState(false);
+
+  const router = useRouter();
   const {
     handleSubmit,
     register,
@@ -21,27 +27,31 @@ export default function EditImovel({ data }: { data: Imovel }) {
   });
 
   useEffect(() => {
-    setValue('descricao', data.descricao);
-    setValue('endereco', data.endereco);
-    setValue('dataCompra', data.dataCompra.toString());
-    setValue('comodos', data.comodos);
-    setNumComodos(data.comodos.length);
-  }, [data, setValue]);
+    setValue('descricao', params.descricao);
+    setValue('endereco', params.endereco);
+    setValue('dataCompra', params.dataCompra.toString());
+    setValue('comodos', params.comodos);
+    setNumComodos(params.comodos.length);
+  }, [params, setValue]);
 
   const removerComodo = (idx: number) => {
     setValue(`comodos.${idx}.nome`, '');
-
     setNumComodos((prev) => prev - 1);
   };
 
   const [numComodos, setNumComodos] = useState(0);
 
   async function onSubmit(data: FormData) {
+    console.log(params.id);
     try {
-      await api.post('/imovel', data);
-      alert('Cadastro realizado com sucesso!');
+      await api.put(`/imovel/${params.id}`, data);
+      setAlertError(false);
+      setAlertSuccess(true);
     } catch (error) {
-      alert('Erro ao cadastrar imóvel!');
+      console.log(error);
+
+      setAlertError(true);
+      setAlertSuccess(false);
     }
   }
   return (
@@ -166,29 +176,41 @@ export default function EditImovel({ data }: { data: Imovel }) {
                     </svg>
                     Adicionar comodo
                   </button>
-
-                  <button
-                    type="submit"
-                    className="relative inline-flex items-center justify-center p-0.5 mb-2 mr-2 overflow-hidden text-sm font-medium text-gray-900 rounded-lg group bg-gradient-to-br from-purple-600 to-blue-500 group-hover:from-purple-600 group-hover:to-blue-500 hover:text-white focus:ring-4 focus:outline-none focus:ring-blue-300 hover:cursor-pointer mt-10"
-                  >
-                    {isSubmitting ? (
-                      <div role="status">
-                        <svg
-                          aria-hidden="true"
-                          className="inline w-6 h-6 mr-2 text-white animate-spin fill-cyan-600 opacity-100"
-                          viewBox="0 0 100 101"
-                          fill="none"
-                          xmlns="http://www.w3.org/2000/svg"
-                        ></svg>
-                      </div>
-                    ) : (
+                  <div className="flex items-center justify-center">
+                    <button
+                      type="submit"
+                      className="relative inline-flex items-center justify-center p-0.5 mb-2 mr-2 overflow-hidden text-sm font-medium text-gray-900 rounded-lg group bg-gradient-to-br from-purple-600 to-blue-500 group-hover:from-purple-600 group-hover:to-blue-500 hover:text-white focus:ring-4 focus:outline-none focus:ring-blue-300 hover:cursor-pointer mt-10"
+                    >
+                      {isSubmitting ? (
+                        <div role="status">
+                          <svg
+                            aria-hidden="true"
+                            className="inline w-6 h-6 mr-2 text-white animate-spin fill-green-600 opacity-100"
+                            viewBox="0 0 100 101"
+                            fill="none"
+                            xmlns="http://www.w3.org/2000/svg"
+                          ></svg>
+                        </div>
+                      ) : (
+                        <span className="relative px-5 py-2.5 transition-all ease-in duration-75 bg-white rounded-md group-hover:bg-opacity-0">
+                          Salvar
+                        </span>
+                      )}
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => router.replace('/')}
+                      className="relative inline-flex items-center justify-center p-0.5 mb-2 mr-2 overflow-hidden text-sm font-medium text-gray-900 rounded-lg group bg-gradient-to-br from-green-600 to-green-500 group-hover:from-purple-600 group-hover:to-blue-500 hover:text-white focus:ring-4 focus:outline-none focus:ring-blue-300 hover:cursor-pointer mt-10"
+                    >
                       <span className="relative px-5 py-2.5 transition-all ease-in duration-75 bg-white rounded-md group-hover:bg-opacity-0">
-                        Cadastrar
+                        Voltar
                       </span>
-                    )}
-                  </button>
+                    </button>
+                  </div>
                 </section>
               </form>
+              {alertError && <AlertErro message="Falha ao alterar" />}
+              {alertSuccess && <AlertSuccess message="Alterado com sucesso" />}
             </div>
           </div>
         </div>

@@ -6,10 +6,12 @@ import { imovelSchema } from '../zod-schema/cadastro-imovel';
 import { useState } from 'react';
 import { api } from '../core/api/axios';
 import FormInput from './input/form-input';
+import { useRouter } from 'next/navigation';
 
 type FormData = z.infer<typeof imovelSchema>;
 
 export default function CadastroForm() {
+  const router = useRouter();
   const {
     handleSubmit,
     register,
@@ -21,7 +23,6 @@ export default function CadastroForm() {
 
   const removerComodo = (idx: number) => {
     setValue(`comodos.${idx}.nome`, '');
-
     setNumComodos((prev) => prev - 1);
   };
 
@@ -30,7 +31,7 @@ export default function CadastroForm() {
   async function onSubmit(data: FormData) {
     try {
       await api.post('/imovel', data);
-      alert('Cadastro realizado com sucesso!');
+      router.refresh();
     } catch (error) {
       alert('Erro ao cadastrar imóvel!');
     }

@@ -1,5 +1,5 @@
-import EditImovel from 'frontend/components/edit-imovel';
-import { getImovel } from '../../core/api/get-imovel';
+import EditImovel from '../../components/edit-imovel';
+import { getImovel } from '../../core';
 
 export default async function EditPage({ params }: { params: { id: string } }) {
   const { id } = params;
