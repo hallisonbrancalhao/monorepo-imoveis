@@ -1,4 +1,4 @@
-import { Inject, Injectable } from '@nestjs/common';
+import { Inject, Injectable, NotFoundException } from '@nestjs/common';
 import { CreateImovelDto } from './dto/create-imovel.dto';
 import { UpdateImovelDto } from './dto/update-imovel.dto';
 import { Imovel } from './entities/imovel.entity';
@@ -47,9 +47,22 @@ export class ImovelService {
   }
 
   async update(id: number, updateImovelDto: UpdateImovelDto) {
-    return await this.imovelRepository.update(id, updateImovelDto);
-  }
+    const imovel = await this.imovelRepository.findOne({
+      where: { id },
+      relations: ['comodos'],
+    });
 
+    if (!imovel) {
+      throw new NotFoundException('Imóvel não encontrado');
+    }
+
+    imovel.descricao = updateImovelDto.descricao;
+    imovel.dataCompra = updateImovelDto.dataCompra;
+    imovel.endereco = updateImovelDto.endereco;
+    imovel.comodos = updateImovelDto.comodos;
+
+    return await this.imovelRepository.save(imovel);
+  }
   async remove(id: number) {
     return await this.imovelRepository.delete(id);
   }

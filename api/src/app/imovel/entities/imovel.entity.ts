@@ -11,7 +11,7 @@ export class Imovel {
   @IsString({ message: 'A descricao deve ser uma string' })
   descricao: string;
 
-  @Column('datetime')
+  @Column()
   @IsDate({ message: 'A data da compra deve ser uma data' })
   dataCompra: Date;
 
